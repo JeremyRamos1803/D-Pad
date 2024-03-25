@@ -1,89 +1,84 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+body {
+  background-color: #222; /* Define el fondo oscuro del cuerpo del documento */
 }
-html {
-  height: 100%;
-}
-body{
-  border: 2px solid red;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  place-content: center;
-  align-items: center;
-  background-color: black;
-  height: 100%;
-  width: 100%;
-}
-header{
-  height: 18%;
-  border: 2px solid green;
-  width: 100%;
-  background-color: transparent;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline: 20px;
-  padding-top: 1%;
-  padding-bottom: 1%;
-}
-.contenedor{
-  flex: 1;
-  border: solid 2px blue;
-  background-color: black;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-.el{
-  position: relative;
-  color: white;
-  border: solid 2px rgb(123, 0, 255);
-  background: rgb(0,0,0);
-  background: radial-gradient(circle, rgba(0,0,0,1) 52%, rgba(123,0,255,1) 100%);
-  height: 80%;
-  aspect-ratio: 1/1;
-  border-radius: 50%;
-  display: flex;
 
+/* Contenedor de las crucetas */
+.d-pad-container {
+  display: flex;
+  justify-content: space-around; /* Distribuye los elementos horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+  height: 80vh; /* Altura ajustada al 80% del viewport height */
 }
-.circulo {
-  position: absolute;
-  background: radial-gradient(circle, rgba(0,0,0,1) 47%, rgba(123,0,255,1) 100%);
-  border: solid 2px rgb(123, 0, 255); /*rgb(11, 202, 11)*/
-  width: 50px;
-  height: 50px;
+
+/* Estilo de las crucetas */
+.d-pad {
+  position: relative; /* Permite posicionar los paneles de pantalla dentro del contenedor */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 10px;
+  width: 200px; /* Ajusta el tamaño según tus necesidades */
+  height: 200px; /* Ajusta el tamaño según tus necesidades */
+  background-color: #333; /* Define el color de fondo de las crucetas */
+  border: 2px solid #333;
+  border-radius: 10px;
+  touch-action: none; /* Para deshabilitar el desplazamiento táctil */
+}
+
+/* Estilo de los botones de las crucetas */
+.d-pad button {
+  background-color: #4b0082; /* Define el color de fondo de los botones */
+  border: 1px solid #222; /* Define el borde de los botones */
   border-radius: 50%;
+  font-size: 24px;
+  color: #222; /* Define el color del texto de los botones */
   cursor: pointer;
-  
-}
-button{
-  background-color: transparent;
-  border: solid 2px rgb(123, 0, 255);
-  border-radius: 12px;
-  color: white;
-  padding: 6px;
-}
-button:hover{
-  transform: scale(1.1);
-  background-color: rgb(123, 0, 255);
-}
-.info{
-  background-color: transparent;
-  border: solid 2px rgb(123, 0, 255);
-  height: 100%;
-  width: 20%;
-  border-radius: 12px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 1%;
 }
 
+/* Estilo de los botones activos */
+.d-pad button.active {
+  background-color: #663399; /* Define el color de fondo de los botones activos */
+}
 
+.d-pad button:focus {
+  outline: none;
+}
 
+/* Posicionamiento de los botones */
+.d-pad button.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.d-pad button.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.d-pad button.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.d-pad button.down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+/* Estilos de los paneles de pantalla */
+.screen {
+  position: absolute;
+  top: -40px; /* Ajusta la posición vertical */
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100px;
+  height: 30px;
+  background-color: #4b0082; /* Define el color de fondo de los paneles de pantalla */
+  border: 1px solid #222; /* Define el borde de los paneles de pantalla */
+  border-radius: 5px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 30px;
+  color: #222; /* Define el color del texto de los paneles de pantalla */
+}
