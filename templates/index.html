@@ -93,52 +93,71 @@
 </head>
 <body>
 
-<div class="d-pad-container">
-    <!-- Primera cruceta con su correspondiente panel de pantalla -->
-    <div class="d-pad">
-        <div class="screen" id="screen1"></div> <!-- Contenedor de pantalla -->
-        <button class="up" data-direction="Up">&#8593;</button> <!-- Botón de dirección hacia arriba -->
-        <button class="left" data-direction="Left">&#8592;</button> <!-- Botón de dirección hacia la izquierda -->
-        <button class="right" data-direction="Right">&#8594;</button> <!-- Botón de dirección hacia la derecha -->
-        <button class="down" data-direction="Down">&#8595;</button> <!-- Botón de dirección hacia abajo -->
+    <div class="d-pad-container">
+      <div class="d-pad">
+        <div class="screen" id="screen1"></div>
+        <button class="up" data-direction="1">&#8593;</button>
+        <button class="left" data-direction="2">&#8592;</button>
+        <button class="right" data-direction="3">&#8594;</button>
+        <button class="down" data-direction="4">&#8595;</button>
+      </div>
+    
+      <div class="d-pad">
+        <div class="screen" id="screen2"></div>
+        <button class="up" data-direction="5">&#8593;</button>
+        <button class="left" data-direction="6">&#8592;</button>
+        <button class="right" data-direction="7">&#8594;</button>
+        <button class="down" data-direction="8">&#8595;</button>
+      </div>
     </div>
-
-    <!-- Segunda cruceta con su correspondiente panel de pantalla -->
-    <div class="d-pad">
-        <div class="screen" id="screen2"></div> <!-- Contenedor de pantalla -->
-        <button class="up" data-direction="Up">&#8593;</button> <!-- Botón de dirección hacia arriba -->
-        <button class="left" data-direction="Left">&#8592;</button> <!-- Botón de dirección hacia la izquierda -->
-        <button class="right" data-direction="Right">&#8594;</button> <!-- Botón de dirección hacia la derecha -->
-        <button class="down" data-direction="Down">&#8595;</button> <!-- Botón de dirección hacia abajo -->
-    </div>
-</div>
-
-<script>
-    // Selecciona todas las crucetas
-    const dPads = document.querySelectorAll('.d-pad');
-
-    // Itera sobre cada cruceta
-    dPads.forEach(dPad => {
-        const buttons = dPad.querySelectorAll('button'); // Selecciona todos los botones dentro de la cruceta
-        const screen = dPad.querySelector('.screen'); // Selecciona el panel de pantalla dentro de la cruceta
-
-        // Itera sobre cada botón de la cruceta
+    
+    <script>
+      const dPads = document.querySelectorAll('.d-pad');
+    
+      dPads.forEach(dPad => {
+        const buttons = dPad.querySelectorAll('button');
+        const screen = dPad.querySelector('.screen');
+    
         buttons.forEach(button => {
-        // Agrega un evento touchstart para activar el botón y mostrar la dirección en el panel de pantalla
-        button.addEventListener('touchstart', () => {
-            button.classList.add('active'); // Agrega la clase 'active' al botón
-            const direction = button.getAttribute('data-direction'); // Obtiene la dirección del botón
-            screen.textContent = direction; // Muestra la dirección en el panel de pantalla
+          button.addEventListener('touchstart', () => {
+            button.classList.add('active');
+            const direction = button.getAttribute('data-direction');
+            screen.textContent = direction;
+    
+            // Crear objeto JSON con la información del botón presionado
+            const buttonInfo = {
+              "direction": direction
+            };
+            console.log(buttonInfo)
+            // Enviar la información al servidor usando fetch
+            fetch('http://192.168.31.63:9090/1', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(buttonInfo)
+            })
+            .then(response => {
+              if(!response.ok){
+                throw new Error("Ocurrio algo")
+              }
+              return response.json()
+            })
+            .then(data => {
+              console.log("Respuesta servidor", data)
+            })
+            .catch(error => {
+              console.error('Error al enviar datos al servidor:', error);
+            });
+          });
+    
+          button.addEventListener('touchend', () => {
+            button.classList.remove('active');
+            screen.textContent = "";
+          });
         });
-
-        // Agrega un evento touchend para desactivar el botón y borrar la dirección del panel de pantalla
-        button.addEventListener('touchend', () => {
-            button.classList.remove('active'); // Remueve la clase 'active' del botón
-            screen.textContent = ""; // Borra la dirección del panel de pantalla
-        });
-        });
-    });
-</script>
-
-</body>
+      });
+    </script>
+    
+    </body>
 </html>
