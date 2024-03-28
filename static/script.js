@@ -1,10 +1,7 @@
-// Selecciona todas las crucetas
-const dPads = document.querySelectorAll('.d-pad');
-
-// Itera sobre cada cruceta
-dPads.forEach(dPad => {
-    const buttons = dPad.querySelectorAll('button'); // Selecciona todos los botones dentro de la cruceta
-    const screen = dPad.querySelector('.screen'); // Selecciona el panel de pantalla dentro de la cruceta
+const dPads = document.querySelectorAll('.d-pad');    
+    dPads.forEach(dPad => {
+        const buttons = dPad.querySelectorAll('button');
+        const screen = dPad.querySelector('.screen');
 
     // Itera sobre cada botón de la cruceta
     buttons.forEach(button => {
