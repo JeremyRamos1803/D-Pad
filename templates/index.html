@@ -40,6 +40,7 @@
         font-size: 24px;
         color: #222; /* Define el color del texto de los botones */
         cursor: pointer;
+        user-select: none; /* Evita la selección del texto */
     }
 
     /* Estilo de los botones activos */
@@ -89,9 +90,29 @@
         line-height: 30px;
         color: #222; /* Define el color del texto de los paneles de pantalla */
     }
+
+    /* Estilo del botón adicional */
+    #extra-button {
+        position: absolute;
+        top: 10px; /* Ajusta la posición vertical */
+        left: 50%; /* Ajusta la posición horizontal */
+        transform: translateX(-50%); /* Centra horizontalmente */
+        background-color: #4b0082; /* Define el color de fondo del botón */
+        border: 1px solid #222; /* Define el borde del botón */
+        border-radius: 50%;
+        font-size: 24px;
+        color: #222; /* Define el color del texto del botón */
+        cursor: pointer;
+    }
+
+    #extra-button.active {
+        background-color: #663399; /* Define el color de fondo del botón activo */
+    }
 </style>
 </head>
 <body>
+
+    <button id="extra-button">&#10000;</button> <!-- Botón adicional fuera de los contenedores de los D-pad -->
 
     <div class="d-pad-container">
       <div class="d-pad">
@@ -113,51 +134,96 @@
     
     <script>
       const dPads = document.querySelectorAll('.d-pad');
-    
+
+      // Función para enviar la señal repetidamente mientras el botón está presionado
+      function sendSignalContinuously(direction) {
+        const buttonInfo = {
+          "direction": direction
+        };
+
+        // Enviar la información al servidor usando fetch
+        fetch('http://192.168.31.63:9090/1', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(buttonInfo)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Ocurrió algo")
+          }
+          return response.json()
+        })
+        .then(data => {
+          console.log("Respuesta servidor", data)
+        })
+        .catch(error => {
+          console.error('Error al enviar datos al servidor:', error);
+        });
+      }
+
       dPads.forEach(dPad => {
         const buttons = dPad.querySelectorAll('button');
         const screen = dPad.querySelector('.screen');
-    
+
         buttons.forEach(button => {
+          let pressTimer;
           button.addEventListener('touchstart', () => {
             button.classList.add('active');
             const direction = button.getAttribute('data-direction');
             screen.textContent = direction;
-    
-            // Crear objeto JSON con la información del botón presionado
-            const buttonInfo = {
-              "direction": direction
-            };
-            console.log(buttonInfo)
-            // Enviar la información al servidor usando fetch
-            fetch('http://192.168.31.63:9090/1', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(buttonInfo)
-            })
-            .then(response => {
-              if(!response.ok){
-                throw new Error("Ocurrio algo")
-              }
-              return response.json()
-            })
-            .then(data => {
-              console.log("Respuesta servidor", data)
-            })
-            .catch(error => {
-              console.error('Error al enviar datos al servidor:', error);
-            });
+            
+            // Enviar señal repetidamente mientras el botón está presionado
+            pressTimer = setInterval(() => {
+              sendSignalContinuously(direction);
+            }, 20); // Intervalo de envío de señal (en milisegundos)
           });
-    
+
           button.addEventListener('touchend', () => {
+            clearInterval(pressTimer);
             button.classList.remove('active');
             screen.textContent = "";
           });
         });
       });
+
+      // Agregar evento al botón adicional
+      const extraButton = document.getElementById('extra-button');
+      extraButton.addEventListener('touchstart', () => {
+        extraButton.classList.add('active');
+
+        // Crear objeto JSON con la información del botón presionado
+        const buttonInfo = {
+          "direction": "Extra"
+        };
+
+        // Enviar la información al servidor usando fetch
+        fetch('http://192.168.31.63:9090/1', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(buttonInfo)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Ocurrió algo")
+          }
+          return response.json()
+        })
+        .then(data => {
+          console.log("Respuesta servidor", data)
+        })
+        .catch(error => {
+          console.error('Error al enviar datos al servidor:', error);
+        });
+      });
+
+      extraButton.addEventListener('touchend', () => {
+        extraButton.classList.remove('active');
+      });
     </script>
     
-    </body>
+</body>
 </html>
